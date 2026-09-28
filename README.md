@@ -1,5 +1,3 @@
-# mapeamento-de-validade-de-alimentos
-
 # 📌 Resumo da API - Mapeamento de Validade de Alimentos
 
 ## ⚙️ Configuração Base
@@ -13,7 +11,7 @@
 ### 1. `GET /produtos`
 * **Função:** Teste de status da aplicação.
 * **Corpo enviado:** Nenhum.
-* **Retorno:** Texto simples informando que o servidor está pronto para cadastros.
+* **Retorno:** Por enquanto um Hello World.
 
 ---
 
