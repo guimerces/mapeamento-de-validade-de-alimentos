@@ -44,21 +44,23 @@ Método / Rota: POST /produtos
 Função: Cadastrar um novo produto no PostgreSQL.
 
 Corpo enviado (JSON):
-
+````
 JSON
 {
   "nome": "string",
   "dataValidade": "AAAA-MM-DD"
 }
+````
 
 Retorno: Mensagem com os dados cadastrados e o ID gerado pelo banco.
 
 Exemplo de teste via terminal:
 
-Bash
+````Bash
 curl -X POST http://localhost:8080/produtos \
   -H "Content-Type: application/json" \
   -d '{"nome": "castanha de caju 50g", "dataValidade": "2026-09-28"}'
+````
 3. Consultar Validade por Nome
 Método / Rota: GET /produtos?nome={nome_do_produto}
 
@@ -68,8 +70,10 @@ Corpo enviado: Nenhum.
 
 Exemplo de teste via terminal:
 
-Bash
+````Bash
 curl "http://localhost:8080/produtos?nome=castanha%20de%20caju%2050g"
+````
+
 4. Consultar Produto por ID
 Método / Rota: GET /produtos/{id}
 
@@ -79,5 +83,6 @@ Corpo enviado: Nenhum.
 
 Exemplo de teste via terminal:
 
-Bash
+````Bash
 curl http://localhost:8080/produtos/1
+````
