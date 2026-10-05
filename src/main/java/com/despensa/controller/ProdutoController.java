@@ -1,33 +1,58 @@
 package com.despensa.controller;
 
-import com.despensa.dto.ProdutoDTO;
-import com.despensa.model.Produto;
+import com.despensa.dto.request.ProdutoRequestDTO;
+import com.despensa.dto.response.ProdutoResponseDTO;
 import com.despensa.service.ProdutoService;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/produtos")
 public class ProdutoController {
 
-    // 1. Injeta o SERVICE (e não mais o Repository)
     @Autowired
     private ProdutoService produtoService;
 
-    @GetMapping
-    public String status() {
-        return "Servidor rodando e pronto para receber cadastros!";
+    // ResponseEntity é uma classe definida para o spring web que facilita a resposta da requisição
+
+    @GetMapping(params = "nome")
+    public ResponseEntity<ProdutoResponseDTO> recuperarProdutoPorNome(@RequestParam("nome") String nome) {
+        ProdutoResponseDTO produtoResponse = produtoService.buscarProdutoPorNome(nome);
+
+        if(produtoResponse != null){ 
+            return ResponseEntity.ok(produtoResponse);
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        } 
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProdutoResponseDTO> buscarProdutoPorId(@PathVariable Long id) {
+        ProdutoResponseDTO produtoResponse = produtoService.buscarProdutoPorId(id);
+
+        if(produtoResponse != null){ 
+            return ResponseEntity.ok(produtoResponse);
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        } 
+
     }
 
     @PostMapping
-    public String cadastrarProduto(@RequestBody ProdutoDTO dto) {
+    public ResponseEntity<ProdutoResponseDTO> cadastrarProduto(@RequestBody ProdutoRequestDTO dto) {
         
         // 2. O Controller apenas repassa o DTO para a camada de negócio
-        Produto produtoSalvo = produtoService.cadastrar(dto);
+        ProdutoResponseDTO produtoResponse = produtoService.cadastrar(dto);
 
         // 3. Devolve a resposta ao cliente HTTP
-        return "Produto " + produtoSalvo.getNome() + 
-               ", com validade " + produtoSalvo.getDataValidade() + 
-               " cadastrado com sucesso! (ID no banco: " + produtoSalvo.getId() + ")";
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse);
     }
+
+    
 }
