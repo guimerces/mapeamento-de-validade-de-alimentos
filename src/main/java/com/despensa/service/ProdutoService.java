@@ -12,6 +12,15 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
+    // Considerando inicialmente que não existem nomes repetidos
+    public Produto buscarProdutoPorNome(String parametroNome){
+        return produtoRepository.findByNome(parametroNome);
+    }   
+
+    public Produto buscarProdutoPorId(Long id){
+        return produtoRepository.findById(id).orElse(null);
+    }
+
     public Produto cadastrar(ProdutoDTO dto) {
         // Aqui entrarão as validações de negócio no futuro!
         Produto novoProduto = new Produto(dto.getNome(), dto.getDataValidade());

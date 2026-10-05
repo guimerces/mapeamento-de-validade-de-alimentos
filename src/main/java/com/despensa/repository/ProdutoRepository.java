@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    // A interface fica vazia de propósito!
+
+    Produto findByNome(String nome);
+
 }

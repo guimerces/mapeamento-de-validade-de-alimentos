@@ -10,13 +10,30 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/produtos")
 public class ProdutoController {
 
-    // 1. Injeta o SERVICE (e não mais o Repository)
     @Autowired
     private ProdutoService produtoService;
 
-    @GetMapping
-    public String status() {
-        return "Servidor rodando e pronto para receber cadastros!";
+    // @GetMapping
+    // public String RecuperarProdutoPorNome(@RequestParam("nome") String parametroNome) {
+    //     Produto produtoRecuperado = produtoService.buscarProdutoPorNome(parametroNome);
+    //     LocalDate validade = produtoRecuperado.getDataValidade();
+    //     String nome = produtoRecuperado.getNome();
+    //     return "O produto: " + nome + " tem validade: " + validade;
+    // }
+
+    @GetMapping("/{id}")
+    public String buscarProdutoPorId(@PathVariable Long id) {
+        Produto produto = produtoService.buscarProdutoPorId(id);
+
+        if(produto != null){ 
+            return "Produto: " + produto.getNome() + 
+            " com id: " +  id + " tem validade: " + produto.getDataValidade();
+        }
+        else{
+            return "O produto de id: " + id + 
+            "não foi encontrado no sistema.";
+        } 
+
     }
 
     @PostMapping
@@ -30,4 +47,6 @@ public class ProdutoController {
                ", com validade " + produtoSalvo.getDataValidade() + 
                " cadastrado com sucesso! (ID no banco: " + produtoSalvo.getId() + ")";
     }
+
+    
 }
