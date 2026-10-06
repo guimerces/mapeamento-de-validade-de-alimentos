@@ -54,5 +54,13 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse);
     }
 
-    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarProdutoPorId(@PathVariable Long id) {
+        if(produtoService.deletarProdutoPorId(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

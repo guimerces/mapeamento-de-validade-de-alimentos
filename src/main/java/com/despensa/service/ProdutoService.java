@@ -31,4 +31,14 @@ public class ProdutoService {
         Produto produto = produtoRepository.save(produtoDB);
         return ProdutoMapper.transformarParaDTO(produto);
     }
+
+    public boolean deletarProdutoPorId(Long id){
+        if(produtoRepository.existsById(id)){
+            produtoRepository.deleteById(id);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
