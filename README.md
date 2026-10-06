@@ -30,7 +30,7 @@ Bash
 docker run --name pg-despensa --restart always -e POSTGRES_DB=despensa_db -e POSTGRES_PASSWORD=admin -p 5432:5432 -d postgres:16
 ```
 
-2. Iniciar a Aplicação (Spring Boot)
+### 2. Iniciar a Aplicação (Spring Boot)
 Na raiz do projeto, execute o comando Maven Wrapper:
 
 ```Bash
@@ -118,4 +118,20 @@ Exemplo de teste via terminal:
 ```
 Bash
 curl -i "http://localhost:8080/produtos?nome=Castanha%20de%20Caju%2050g"
+```
+
+
+---
+
+### 4. Deletar Produto por ID
+Método / Rota: DELETE /produtos/{id}
+Status HTTP: 204 No Content (se removido com sucesso) ou 404 Not Found (se inexistente)
+Função: Remove o produto do banco de dados pelo identificador único via variável de caminho (@PathVariable).
+Payload de Envio: Nenhum.
+Payload de Retorno: Nenhum (empty body).
+
+Exemplo de teste via terminal:
+
+```bash
+curl -i -X DELETE http://localhost:8080/produtos/1
 ```
