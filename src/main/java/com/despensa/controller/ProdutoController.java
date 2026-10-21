@@ -4,6 +4,7 @@ import com.despensa.dto.request.ProdutoRequestDTO;
 import com.despensa.dto.response.ProdutoResponseDTO;
 import com.despensa.service.ProdutoService;
 
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,15 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
-    // ResponseEntity é uma classe definida para o spring web que facilita a resposta da requisição
+    // ResponseEntity é uma classe definida para o spring web que facilita a resposta da requisição com seus status
+
+
+    // Get Mappings
+    @GetMapping
+    public ResponseEntity<List<ProdutoResponseDTO>> listarTodosProdutos(){
+        List<ProdutoResponseDTO> produtosDTO = produtoService.listarTodosProdutos();
+        return ResponseEntity.ok(produtosDTO);
+    }
 
     @GetMapping(params = "nome")
     public ResponseEntity<ProdutoResponseDTO> recuperarProdutoPorNome(@RequestParam("nome") String nome) {
@@ -30,6 +39,8 @@ public class ProdutoController {
             return ResponseEntity.notFound().build();
         } 
     }
+
+     
 
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> buscarProdutoPorId(@PathVariable Long id) {
@@ -44,8 +55,10 @@ public class ProdutoController {
 
     }
 
+
+    // Post Mappings
     @PostMapping
-    public ResponseEntity<ProdutoResponseDTO> cadastrarProduto(@RequestBody ProdutoRequestDTO dto) {
+    public ResponseEntity<ProdutoResponseDTO> cadastrarProduto(@RequestBody ProdutoRequestDTO dto) { // o spring instancia o dto
         
         // 2. O Controller apenas repassa o DTO para a camada de negócio
         ProdutoResponseDTO produtoResponse = produtoService.cadastrar(dto);
@@ -54,6 +67,8 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse);
     }
 
+
+    // Delete Mappings
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarProdutoPorId(@PathVariable Long id) {
         if(produtoService.deletarProdutoPorId(id)) {
