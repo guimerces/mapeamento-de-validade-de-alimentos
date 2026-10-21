@@ -22,13 +22,19 @@ public class ProdutoController {
 
 
     // Get Mappings
+    
+    // TO DO: [DÍVIDA TÉCNICA] A rota dedicada "/busca" foi adotada temporariamente
+    // para viabilizar a visualização isolada das operações no Swagger UI sem colisões de contrato.
+    // Futura refatoração: Unificar em GET /produtos com @RequestParam(required = false)
+    // para estrita aderência ao padrão REST canônico.
+
     @GetMapping
     public ResponseEntity<List<ProdutoResponseDTO>> listarTodosProdutos(){
         List<ProdutoResponseDTO> produtosDTO = produtoService.listarTodosProdutos();
         return ResponseEntity.ok(produtosDTO);
     }
 
-    @GetMapping(params = "nome")
+    @GetMapping("/busca")
     public ResponseEntity<ProdutoResponseDTO> recuperarProdutoPorNome(@RequestParam("nome") String nome) {
         ProdutoResponseDTO produtoResponse = produtoService.buscarProdutoPorNome(nome);
 

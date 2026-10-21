@@ -36,6 +36,11 @@ Na raiz do projeto, execute o comando Maven Wrapper:
 
 Aguarde até a mensagem indicando que o servidor Tomcat subiu na porta **8080**.
 
+### 3. Documentação Interativa (Swagger UI)
+Com a aplicação em execução, acesse a bancada de testes interativa diretamente pelo navegador:
+* **Local:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+* **GitHub Codespaces:** Abra a porta `8080` na aba *Ports* e adicione `/swagger-ui.html` ao final da URL gerada.
+
 ---
 
 ## 🛣️ Endpoints Ativos
@@ -116,9 +121,9 @@ curl -i http://localhost:8080/produtos/1
 ---
 
 ### 4. Consultar Produto por Nome
-* **Método / Rota:** `GET /produtos?nome={nome_do_produto}`
+* **Método / Rota:** `GET /produtos/busca?nome={nome_do_produto}`
 * **Status HTTP:** `200 OK` (se localizado) ou `404 Not Found` (se inexistente)
-* **Função:** Filtra produto por nome exato via parâmetro de consulta (`@RequestParam`).
+* **Função:** Filtra produto por nome exato via parâmetro de consulta (`@RequestParam`) em rota dedicada.
 
 **Payload de Retorno (`ProdutoResponseDTO`):**
 ```json
@@ -131,7 +136,7 @@ curl -i http://localhost:8080/produtos/1
 
 **Exemplo de teste via terminal:**
 ```bash
-curl -i "http://localhost:8080/produtos?nome=Castanha%20de%20Caju%2050g"
+curl -i "http://localhost:8080/produtos/busca?nome=Castanha%20de%20Caju%2050g"
 ```
 
 ---
@@ -148,3 +153,14 @@ curl -i "http://localhost:8080/produtos?nome=Castanha%20de%20Caju%2050g"
 ```bash
 curl -i -X DELETE http://localhost:8080/produtos/1
 ```
+
+---
+
+## 🛠️ Dívidas Técnicas Conscientes & Próximos Passos
+
+> [!NOTE]
+> Esta seção documenta decisões de engenharia pragmáticas tomadas durante o ciclo atual para viabilizar entregas rápidas sem comprometer o planejamento arquitetural futuro.
+
+* **Endpoint de Consulta Textual (`GET /produtos/busca`):**
+  * **Contexto:** A rota `/busca` foi adotada temporariamente para evitar conflitos na documentação de contratos OpenAPI/Swagger em relação ao endpoint de listagem geral (`GET /produtos`).
+  * **Ação Futura (Refatoração):** Unificar a listagem irrestrita e o filtro textual sob o endpoint canônico `GET /produtos` com parâmetro opcional (`@RequestParam(required = false)`), preservando o Nível 2 do Modelo de Maturidade de Richardson (sem verbos nas URIs).
