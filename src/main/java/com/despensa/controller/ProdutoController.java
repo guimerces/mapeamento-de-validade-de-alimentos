@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/produtos")
 public class ProdutoController {
@@ -64,7 +66,7 @@ public class ProdutoController {
 
     // Post Mappings
     @PostMapping
-    public ResponseEntity<ProdutoResponseDTO> cadastrarProduto(@RequestBody ProdutoRequestDTO dto) { // o spring instancia o dto
+    public ResponseEntity<ProdutoResponseDTO> cadastrarProduto(@RequestBody @Valid ProdutoRequestDTO dto) { // o spring instancia o dto
         
         // 2. O Controller apenas repassa o DTO para a camada de negócio
         ProdutoResponseDTO produtoResponse = produtoService.cadastrar(dto);
