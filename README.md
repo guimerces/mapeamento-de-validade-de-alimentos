@@ -154,6 +154,23 @@ curl -i "http://localhost:8080/produtos/busca?nome=Castanha%20de%20Caju%2050g"
 curl -i -X DELETE http://localhost:8080/produtos/1
 ```
 
+
+---
+
+## 🛡️ Validação Declarativa & Tratamento Global de Exceções (v2)
+
+### 1. Bean Validation Declarativo na Borda
+A entrada da API é fiscalizada na camada de apresentação (`@Valid` no Controller), impedindo que dados inconsistentes cheguem ao domínio ou ao banco de dados:
+* `@NotBlank`: Impede nome vazio ou composto apenas de espaços no cadastro.
+* `@NotNull`: Exige o envio da data de validade.
+* `@FutureOrPresent`: Garante que alimentos já vencidos não sejam cadastrados como novos na despensa.
+
+### 2. Tratamento Global de Exceções (`@RestControllerAdvice`)
+A interceptação centralizada via `GlobalExceptionHandler` padroniza os erros em um payload uniforme (`ApiErro`):
+* `MethodArgumentNotValidException`: Captura violações do Bean Validation e retorna status `400 Bad Request` com lista detalhada dos campos inválidos.
+* `HttpMessageNotReadableException`: Intercepta payloads malformados ou datas fora do formato ISO-8601 (`AAAA-MM-DD`), retornando `400 Bad Request` amigável.
+
+
 ---
 
 ## 🛠️ Dívidas Técnicas Conscientes & Próximos Passos
