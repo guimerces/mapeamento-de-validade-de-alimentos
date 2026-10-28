@@ -43,4 +43,14 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiErro);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiErro> capturarRegrasDeNegocio(RuntimeException ex) {
+        ApiErro apiErro = new ApiErro(
+                HttpStatus.BAD_REQUEST.value(),
+                "Erro de Negócio",
+                List.of(ex.getMessage())
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiErro);
+    }
 }

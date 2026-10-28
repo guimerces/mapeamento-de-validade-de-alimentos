@@ -2,7 +2,10 @@ package com.despensa.controller;
 
 import com.despensa.dto.request.ProdutoRequestDTO;
 import com.despensa.dto.response.ProdutoResponseDTO;
+
 import com.despensa.service.ProdutoService;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -10,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/produtos")
@@ -22,68 +23,58 @@ public class ProdutoController {
 
     // ResponseEntity é uma classe definida para o spring web que facilita a resposta da requisição com seus status
 
-
     // Get Mappings
     
-    // TO DO: [DÍVIDA TÉCNICA] A rota dedicada "/busca" foi adotada temporariamente
-    // para viabilizar a visualização isolada das operações no Swagger UI sem colisões de contrato.
-    // Futura refatoração: Unificar em GET /produtos com @RequestParam(required = false)
-    // para estrita aderência ao padrão REST canônico.
-
     @GetMapping
-    public ResponseEntity<List<ProdutoResponseDTO>> listarTodosProdutos(){
-        List<ProdutoResponseDTO> produtosDTO = produtoService.listarTodosProdutos();
-        return ResponseEntity.ok(produtosDTO);
-    }
+    public ResponseEntity<List<ProdutoResponseDTO>> listarOuFiltrar(
+            @RequestParam(name = "pessoaId") Long pessoaId, // Obrigatório por padrão
+            @RequestParam(name = "nome", required = false) String nome) {
 
-    @GetMapping("/busca")
-    public ResponseEntity<ProdutoResponseDTO> recuperarProdutoPorNome(@RequestParam("nome") String nome) {
-        ProdutoResponseDTO produtoResponse = produtoService.buscarProdutoPorNome(nome);
-
-        if(produtoResponse != null){ 
-            return ResponseEntity.ok(produtoResponse);
+        // 1. Se informou nome, busca o produto específico daquela pessoa
+        if (nome != null && !nome.isBlank()) {
+            ProdutoResponseDTO produto = produtoService.buscarPorNomeEPessoaId(nome, pessoaId);
+            if (produto == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(List.of(produto));
         }
-        else{
-            return ResponseEntity.notFound().build();
-        } 
-    }
 
-     
+        // 2. Se não informou nome, lista todos os produtos da pessoa
+        return ResponseEntity.ok(produtoService.listarPorPessoaId(pessoaId));
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDTO> buscarProdutoPorId(@PathVariable Long id) {
-        ProdutoResponseDTO produtoResponse = produtoService.buscarProdutoPorId(id);
-
-        if(produtoResponse != null){ 
-            return ResponseEntity.ok(produtoResponse);
-        }
-        else{
+    public ResponseEntity<ProdutoResponseDTO> buscarPorId(@PathVariable Long id) {
+        ProdutoResponseDTO response = produtoService.buscarProdutoPorId(id);
+        if (response == null) {
             return ResponseEntity.notFound().build();
-        } 
-
+        }
+        return ResponseEntity.ok(response);
     }
-
 
     // Post Mappings
     @PostMapping
-    public ResponseEntity<ProdutoResponseDTO> cadastrarProduto(@RequestBody @Valid ProdutoRequestDTO dto) { // o spring instancia o dto
-        
-        // 2. O Controller apenas repassa o DTO para a camada de negócio
-        ProdutoResponseDTO produtoResponse = produtoService.cadastrar(dto);
-
-        // 3. Devolve a resposta ao cliente HTTP
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse);
+    public ResponseEntity<ProdutoResponseDTO> cadastrar(@RequestBody @Valid ProdutoRequestDTO dto) {
+        ProdutoResponseDTO response = produtoService.cadastrar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // 4. PUT /produtos/{id}
+    @PutMapping("/{id}")
+    public ResponseEntity<ProdutoResponseDTO> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid ProdutoRequestDTO dto) {
+        ProdutoResponseDTO response = produtoService.atualizar(id, dto);
+        return ResponseEntity.ok(response);
+    }
 
     // Delete Mappings
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarProdutoPorId(@PathVariable Long id) {
-        if(produtoService.deletarProdutoPorId(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        else{
+    public ResponseEntity<Void> deletarPorId(@PathVariable Long id) {
+        boolean deletado = produtoService.deletarProdutoPorId(id);
+        if (!deletado) {
             return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,25 +1,31 @@
 package com.despensa.dto.response;
 
+import com.despensa.model.enums.StatusValidade;
+
 import java.time.LocalDate;
 
 public class ProdutoResponseDTO {
 
-    private Long id; // única mudança, pois esse projeto é muito simples.
+    private Long id;
     private String nome;
     private LocalDate dataValidade;
+    private Integer tempoAvisoEmDias;
+    private Long pessoaId;
+    private StatusValidade statusValidade;
 
-    // Construtor padrão (obrigatório para serializadores)
     public ProdutoResponseDTO() {
     }
 
-    // Construtor completo
-    public ProdutoResponseDTO(Long id, String nome, LocalDate dataValidade) {
+    public ProdutoResponseDTO(Long id, String nome, LocalDate dataValidade, 
+                              Integer tempoAvisoEmDias, Long pessoaId, StatusValidade statusValidade) {
         this.id = id;
         this.nome = nome;
         this.dataValidade = dataValidade;
+        this.tempoAvisoEmDias = tempoAvisoEmDias;
+        this.pessoaId = pessoaId;
+        this.statusValidade = statusValidade;
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -43,4 +49,29 @@ public class ProdutoResponseDTO {
     public void setDataValidade(LocalDate dataValidade) {
         this.dataValidade = dataValidade;
     }
+
+    public Integer getTempoAvisoEmDias() {
+        return tempoAvisoEmDias;
+    }
+
+    public void setTempoAvisoEmDias(Integer tempoAvisoEmDias) {
+        this.tempoAvisoEmDias = tempoAvisoEmDias;
+    }
+
+    public Long getPessoaId() {
+        return pessoaId;
+    }
+
+    public void setPessoaId(Long pessoaId) {
+        this.pessoaId = pessoaId;
+    }
+
+    public StatusValidade getStatusValidade() { 
+        return statusValidade; 
+    }
+
+    public void setStatusValidade(StatusValidade statusValidade) { 
+        this.statusValidade = statusValidade; 
+    }
+
 }
